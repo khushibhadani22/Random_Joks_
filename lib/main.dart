@@ -1,12 +1,10 @@
 import 'package:exam/apiHelper.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';;
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     routes: {
@@ -23,6 +21,26 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  String? time;
+  String? date;
+  String? obTime;
+  String? fTime;
+  DateTime today = DateTime.now();
+  @override
+  void initState() {
+    super.initState();
+    date = "${today.day}-${today.month}-${today.year}";
+    time =
+        "${DateTime.now().hour} : ${DateTime.now().minute} :${DateTime.now().second}";
+    super.initState();
+    fiTime();
+  }
+
+  fiTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    obTime = prefs.getString('time');
+    fTime = prefs.getString('date');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +71,10 @@ class _MyAppState extends State<MyApp> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           GestureDetector(
-                            onTap: () async {
-                              final prefs =
-                                  await SharedPreferences.getInstance();
-                              final int? date = prefs.getInt('date');
-                            },
-                            child: const Text(
-                              "DATE :-  ",
-                              style: TextStyle(
+                            onTap: () {},
+                            child: Text(
+                              "DATE :-  $obTime",
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w600),
                             ),
@@ -68,9 +82,9 @@ class _MyAppState extends State<MyApp> {
                           const SizedBox(
                             height: 10,
                           ),
-                          const Text(
-                            "TIME :-  ",
-                            style: TextStyle(
+                          Text(
+                            "TIME :- $fTime ",
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w600),
                           ),
@@ -185,8 +199,14 @@ class _MyAppState extends State<MyApp> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 40, vertical: 10),
                                 backgroundColor: Colors.black),
-                            onPressed: () {
-                              setState(()  {});
+                            onPressed: () async {
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              setState(() async {
+                                await prefs.setString('time', '$time');
+                                await prefs.setString('date', '$date');
+                                print(obTime);
+                              });
                             },
                             child: const Text(
                               "Fetch My Laugh",
@@ -209,5 +229,13 @@ class _MyAppState extends State<MyApp> {
         },
       ),
     ));
+  }
+
+  void currentTime() {
+    setState(() {
+      time =
+          "${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}";
+      date = "${today.day}-${today.month}-${today.year}";
+    });
   }
 }
