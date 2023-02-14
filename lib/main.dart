@@ -1,10 +1,12 @@
 import 'package:exam/apiHelper.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';;
 
 import 'Model.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     routes: {
@@ -21,6 +23,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -50,12 +53,10 @@ class _MyAppState extends State<MyApp> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           GestureDetector(
-                            onTap: () {
-                              setState(() async {
-                                final prefs =
-                                    await SharedPreferences.getInstance();
-                                final int? date = prefs.getInt('date');
-                              });
+                            onTap: () async {
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              final int? date = prefs.getInt('date');
                             },
                             child: const Text(
                               "DATE :-  ",
@@ -67,7 +68,7 @@ class _MyAppState extends State<MyApp> {
                           const SizedBox(
                             height: 10,
                           ),
-                          Text(
+                          const Text(
                             "TIME :-  ",
                             style: TextStyle(
                                 color: Colors.black,
@@ -184,12 +185,8 @@ class _MyAppState extends State<MyApp> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 40, vertical: 10),
                                 backgroundColor: Colors.black),
-                            onPressed: () async {
-                              final prefs =
-                                  await SharedPreferences.getInstance();
-
-                              await prefs.setInt('date', 14);
-                              await prefs.setInt('time', 12);
+                            onPressed: () {
+                              setState(()  {});
                             },
                             child: const Text(
                               "Fetch My Laugh",
